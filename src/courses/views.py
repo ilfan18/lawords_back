@@ -9,11 +9,3 @@ class APICourseViewSet(ReadOnlyModelViewSet):
     """Контроллер выдает список курсов, и отдельный курс по pk."""
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-
-
-@api_view(['GET'])
-def courses(request):
-    if request.method == 'GET':
-        courses = Course.objects.all()
-        serializer = CourseSerializer(courses, many=True)
-        return Response(serializer.data)
