@@ -16,5 +16,6 @@ celerybeat-schedule
 .ipynb_checkpoints
 env/
 *.ini
-media/
+!*media/.gitkeep
+media/*
 src/static/
