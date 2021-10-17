@@ -1,26 +1,25 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Course, Lesson, Exercise, Answer
+from . import models
 
 
-class LessonAdmin(admin.StackedInline):
-    model = Lesson
+class LessonInline(admin.StackedInline):
+    model = models.Lesson
     extra = 0
 
 
 class ExerciseInline(admin.StackedInline):
-    model = Exercise
+    model = models.Exercise
     extra = 0
 
 
-class Answerinline(admin.StackedInline):
-    model = Answer
+class AnswerInline(admin.StackedInline):
+    model = models.Answer
     extra = 0
 
 
+@admin.register(models.Course)
 class CoursesAdmin(admin.ModelAdmin):
-
-    model = Course
 
     def icon_tag(self, obj):
         if obj.icon:
@@ -32,13 +31,11 @@ class CoursesAdmin(admin.ModelAdmin):
     list_display = ('name', 'level', 'icon_tag')
     search_fields = ('name', 'level')
     list_filter = ('level',)
-    inlines = [
-        LessonAdmin,
-    ]
+    inlines = [LessonInline]
 
 
+@admin.register(models.Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    model = Lesson
 
     def icon_tag(self, obj):
         if obj.icon:
@@ -53,17 +50,9 @@ class LessonAdmin(admin.ModelAdmin):
     inlines = [ExerciseInline]
 
 
+@admin.register(models.Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    model = Exercise
-
     list_display = ('title',)
     search_fields = ('title',)
     list_filter = ('lesson',)
-    inlines = [
-        Answerinline,
-    ]
-
-
-admin.site.register(Course, CoursesAdmin)
-admin.site.register(Lesson, LessonAdmin)
-admin.site.register(Exercise, ExerciseAdmin)
+    inlines = [AnswerInline]
