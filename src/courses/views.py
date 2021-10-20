@@ -6,6 +6,6 @@ from .serializers import CourseSerializer
 
 
 class APICourseViewSet(ReadOnlyModelViewSet):
-    """Контроллер выдает список курсов, и отдельный курс по pk."""
+    """Cписок курсов, и отдельный курс по pk."""
     queryset = Course.objects.all()
     serializer_class = CourseSerializer

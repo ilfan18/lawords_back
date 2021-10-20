@@ -3,13 +3,13 @@ from django.core.validators import (
     MaxValueValidator
 )
 from django.db import models
-from .services import *
+from .base.services import *
 
 
 class AuthUser(models.Model):
     """Модель пользователя."""
 
-    email = models.EmailField('эмейл', max_length=150, unique=True)
+    email = models.EmailField('Эмейл', max_length=150, unique=True)
     join_date = models.DateTimeField('Дата регистрации', auto_now_add=True)
     level_choices = [
         ('beginner', 'Beginner'),
@@ -34,7 +34,7 @@ class AuthUser(models.Model):
         blank=True,
         default=18,
         validators=[
-            MaxValueValidator(limit_value=0, message='Недопустимое значение')
+            MaxValueValidator(limit_value=100, message='Недопустимое значение')
         ]
     )
     avatar = models.ImageField(

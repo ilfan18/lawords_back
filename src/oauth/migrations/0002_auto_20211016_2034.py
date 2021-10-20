@@ -2,7 +2,7 @@
 
 import django.core.validators
 from django.db import migrations, models
-import oauth.services
+import oauth.base.services
 
 
 class Migration(migrations.Migration):
@@ -14,36 +14,43 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='authuser',
-            options={'verbose_name': 'Пользователь', 'verbose_name_plural': 'Пользователи'},
+            options={'verbose_name': 'Пользователь',
+                     'verbose_name_plural': 'Пользователи'},
         ),
         migrations.AddField(
             model_name='authuser',
             name='age',
-            field=models.IntegerField(blank=True, null=True, verbose_name='Возраст'),
+            field=models.IntegerField(
+                blank=True, null=True, verbose_name='Возраст'),
         ),
         migrations.AlterField(
             model_name='authuser',
             name='avatar',
-            field=models.ImageField(blank=True, null=True, upload_to=oauth.services.get_path_upload_avatar, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['jpg', 'png']), oauth.services.validate_size_image], verbose_name='Аватар'),
+            field=models.ImageField(blank=True, null=True, upload_to=oauth.base.services.get_path_upload_avatar, validators=[
+                                    django.core.validators.FileExtensionValidator(allowed_extensions=['jpg', 'png']), oauth.base.services.validate_size_image], verbose_name='Аватар'),
         ),
         migrations.AlterField(
             model_name='authuser',
             name='display_name',
-            field=models.CharField(blank=True, max_length=30, null=True, verbose_name='Имя'),
+            field=models.CharField(
+                blank=True, max_length=30, null=True, verbose_name='Имя'),
         ),
         migrations.AlterField(
             model_name='authuser',
             name='email',
-            field=models.EmailField(max_length=150, unique=True, verbose_name='эмейл'),
+            field=models.EmailField(
+                max_length=150, unique=True, verbose_name='эмейл'),
         ),
         migrations.AlterField(
             model_name='authuser',
             name='join_date',
-            field=models.DateTimeField(auto_now_add=True, verbose_name='Дата регистрации'),
+            field=models.DateTimeField(
+                auto_now_add=True, verbose_name='Дата регистрации'),
         ),
         migrations.AlterField(
             model_name='authuser',
             name='level',
-            field=models.CharField(blank=True, choices=[('beginner', 'Beginner'), ('elementary', 'Elementary'), ('intermediate', 'Intermediate'), ('upper_intermediate', 'Upper-Intermediate'), ('advanced', 'Advanced')], default='beginner', max_length=500, null=True, verbose_name='Уровень'),
+            field=models.CharField(blank=True, choices=[('beginner', 'Beginner'), ('elementary', 'Elementary'), ('intermediate', 'Intermediate'), (
+                'upper_intermediate', 'Upper-Intermediate'), ('advanced', 'Advanced')], default='beginner', max_length=500, null=True, verbose_name='Уровень'),
         ),
     ]

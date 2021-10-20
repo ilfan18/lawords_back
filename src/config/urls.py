@@ -2,11 +2,23 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from rest_framework.routers import DefaultRouter
 
 urlpatterns = [
-    path('', include('courses.urls')),
-    # path('grappelli/', include('grappelli.urls')),  # grappelli URLS
+    # * Это временно
+    path('', include('oauth.urls')),
+    path('api/v1/', include([
+        path('auth/', include('oauth.urls')),
+        path('main/', include('courses.urls')),
+    ])),
     path('admin/', admin.site.urls),
+    # * Документация
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/',
+         SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/',
+         SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
 if settings.DEBUG:

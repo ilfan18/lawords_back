@@ -2,7 +2,7 @@
 
 import django.core.validators
 from django.db import migrations, models
-import oauth.services
+import oauth.base.services
 
 
 class Migration(migrations.Migration):
@@ -16,12 +16,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AuthUser',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('email', models.EmailField(max_length=150, unique=True)),
                 ('join_date', models.DateTimeField(auto_now_add=True)),
-                ('level', models.CharField(blank=True, choices=[('beginner', 'Beginner'), ('elementary', 'Elementary'), ('intermediate', 'Intermediate'), ('upper_intermediate', 'Upper-Intermediate'), ('advanced', 'Advanced')], default='beginner', max_length=500, null=True)),
-                ('display_name', models.CharField(blank=True, max_length=30, null=True)),
-                ('avatar', models.ImageField(blank=True, null=True, upload_to=oauth.services.get_path_upload_avatar, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['jpg', 'png']), oauth.services.validate_size_image])),
+                ('level', models.CharField(blank=True, choices=[('beginner', 'Beginner'), ('elementary', 'Elementary'), ('intermediate', 'Intermediate'), (
+                    'upper_intermediate', 'Upper-Intermediate'), ('advanced', 'Advanced')], default='beginner', max_length=500, null=True)),
+                ('display_name', models.CharField(
+                    blank=True, max_length=30, null=True)),
+                ('avatar', models.ImageField(blank=True, null=True, upload_to=oauth.base.services.get_path_upload_avatar, validators=[
+                 django.core.validators.FileExtensionValidator(allowed_extensions=['jpg', 'png']), oauth.base.services.validate_size_image])),
             ],
         ),
     ]

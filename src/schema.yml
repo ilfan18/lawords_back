@@ -1,0 +1,210 @@
+openapi: 3.0.3
+info:
+  title: Lawords
+  version: 1.0.0
+  description: Сервис изучения английского языка
+paths:
+  /api/courses/:
+    get:
+      operationId: api_courses_list
+      description: Контроллер выдает список курсов, и отдельный курс по pk.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+          description: ''
+  /api/courses/{id}/:
+    get:
+      operationId: api_courses_retrieve
+      description: Контроллер выдает список курсов, и отдельный курс по pk.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Курс.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /auth/api/v1/google/:
+    post:
+      operationId: auth_api_v1_google_create
+      description: Подтверждение авторизации через гугл
+      tags:
+      - auth
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /google/:
+    post:
+      operationId: google_create
+      description: Подтверждение авторизации через гугл
+      tags:
+      - google
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    Answer:
+      type: object
+      properties:
+        text:
+          type: string
+          title: Текст ответа
+          maxLength: 400
+        right:
+          type: boolean
+          title: Верный ответ
+      required:
+      - text
+    BlankEnum:
+      enum:
+      - ''
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Название курса
+          maxLength: 255
+        level:
+          nullable: true
+          title: Уровень курса
+          oneOf:
+          - $ref: '#/components/schemas/LevelEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        new_words:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Число новых слов
+        icon:
+          type: string
+          format: uri
+          nullable: true
+          title: Иконка курса
+        cover:
+          type: string
+          format: uri
+          nullable: true
+          title: Обложка курса
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lesson'
+          readOnly: true
+      required:
+      - id
+      - lessons
+      - name
+    Exercise:
+      type: object
+      properties:
+        title:
+          type: string
+          title: Название задания
+          maxLength: 255
+        exercise_type:
+          nullable: true
+          title: Тип задания
+          oneOf:
+          - $ref: '#/components/schemas/ExerciseTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        text:
+          type: string
+          title: Текст вопроса
+          maxLength: 500
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+          readOnly: true
+      required:
+      - answers
+      - text
+      - title
+    ExerciseTypeEnum:
+      enum:
+      - word_miss_type
+      - translate_type
+      type: string
+    Lesson:
+      type: object
+      properties:
+        name:
+          type: string
+          title: Название урока
+          maxLength: 255
+        icon:
+          type: string
+          format: uri
+          nullable: true
+          title: Иконка урока
+        cover:
+          type: string
+          format: uri
+          nullable: true
+          title: Обложка урока
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exercise'
+          readOnly: true
+      required:
+      - exercises
+      - name
+    LevelEnum:
+      enum:
+      - beginner
+      - elementary
+      - intermediate
+      - upper_intermediate
+      - advanced
+      type: string
+    NullEnum:
+      enum:
+      - null
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
