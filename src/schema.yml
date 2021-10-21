@@ -1,0 +1,422 @@
+openapi: 3.0.3
+info:
+  title: Lawords
+  version: 1.0.0
+  description: Сервис изучения английского языка
+paths:
+  /api/schema/:
+    get:
+      operationId: api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - api
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/auth/google/:
+    post:
+      operationId: api_v1_auth_google_create
+      description: Подтверждение авторизации через гугл.
+      tags:
+      - api
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/me/:
+    get:
+      operationId: api_v1_auth_me_retrieve
+      description: Просмотр и редактирование данных пользовталя.
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: api_v1_auth_me_update
+      description: Просмотр и редактирование данных пользовталя.
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/main/courses/:
+    get:
+      operationId: api_v1_main_courses_list
+      description: Cписок курсов, и отдельный курс по pk.
+      tags:
+      - api
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+          description: ''
+  /api/v1/main/courses/{id}/:
+    get:
+      operationId: api_v1_main_courses_retrieve
+      description: Cписок курсов, и отдельный курс по pk.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Курс.
+        required: true
+      tags:
+      - api
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /google/:
+    post:
+      operationId: google_create
+      description: Подтверждение авторизации через гугл.
+      tags:
+      - google
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /me/:
+    get:
+      operationId: me_retrieve
+      description: Просмотр и редактирование данных пользовталя.
+      tags:
+      - me
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: me_update
+      description: Просмотр и редактирование данных пользовталя.
+      tags:
+      - me
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+components:
+  schemas:
+    Answer:
+      type: object
+      properties:
+        text:
+          type: string
+          title: Текст ответа
+          maxLength: 400
+        right:
+          type: boolean
+          title: Верный ответ
+      required:
+      - text
+    BlankEnum:
+      enum:
+      - ''
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Название курса
+          maxLength: 255
+        level:
+          nullable: true
+          title: Уровень курса
+          oneOf:
+          - $ref: '#/components/schemas/LevelEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        new_words:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Число новых слов
+        icon:
+          type: string
+          format: uri
+          nullable: true
+          title: Иконка курса
+        cover:
+          type: string
+          format: uri
+          nullable: true
+          title: Обложка курса
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lesson'
+          readOnly: true
+      required:
+      - id
+      - lessons
+      - name
+    Exercise:
+      type: object
+      properties:
+        title:
+          type: string
+          title: Название задания
+          maxLength: 255
+        exercise_type:
+          nullable: true
+          title: Тип задания
+          oneOf:
+          - $ref: '#/components/schemas/ExerciseTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        text:
+          type: string
+          title: Текст вопроса
+          maxLength: 500
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+          readOnly: true
+      required:
+      - answers
+      - text
+      - title
+    ExerciseTypeEnum:
+      enum:
+      - word_miss_type
+      - translate_type
+      type: string
+    Lesson:
+      type: object
+      properties:
+        name:
+          type: string
+          title: Название урока
+          maxLength: 255
+        icon:
+          type: string
+          format: uri
+          nullable: true
+          title: Иконка урока
+        cover:
+          type: string
+          format: uri
+          nullable: true
+          title: Обложка урока
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exercise'
+          readOnly: true
+      required:
+      - exercises
+      - name
+    LevelEnum:
+      enum:
+      - beginner
+      - elementary
+      - intermediate
+      - upper_intermediate
+      - advanced
+      type: string
+    NullEnum:
+      enum:
+      - null
+    User:
+      type: object
+      properties:
+        display_name:
+          type: string
+          nullable: true
+          title: Имя
+          maxLength: 30
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          title: Аватар
+          pattern: (?:jpg|png)$
+        age:
+          type: integer
+          maximum: 100
+          minimum: 0
+          nullable: true
+          title: Возраст
+        level:
+          nullable: true
+          title: Уровень
+          oneOf:
+          - $ref: '#/components/schemas/LevelEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'

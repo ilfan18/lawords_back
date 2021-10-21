@@ -12,14 +12,32 @@ class Course(models.Model):
         ('upper_intermediate', 'Upper-Intermediate'),
         ('advanced', 'Advanced'),
     ]
-    level = models.CharField('Уровень курса', blank=True,
-                             max_length=255, choices=level_choices, default='beginner')
-    new_words = models.IntegerField(
-        'Число новых слов', null=True, blank=True, default=0)
+    level = models.CharField(
+        'Уровень курса',
+        max_length=255,
+        choices=level_choices,
+        default='beginner',
+        null=True,
+        blank=True
+    )
+    new_words = models.PositiveIntegerField(
+        'Число новых слов',
+        default=0,
+        null=True,
+        blank=True
+    )
     icon = models.ImageField(
-        'Иконка курса', null=True, blank=True, upload_to='courses/icons/')
+        'Иконка курса',
+        upload_to='courses/icons/',
+        null=True,
+        blank=True
+    )
     cover = models.ImageField(
-        'Обложка курса', null=True, blank=True, upload_to='courses/covers/')
+        'Обложка курса',
+        upload_to='courses/covers/',
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -32,13 +50,26 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     """Модель урока."""
+
     name = models.CharField('Название урока', max_length=255)
     icon = models.ImageField(
-        'Иконка урока', null=True, blank=True, upload_to='lessons/icons/')
+        'Иконка урока',
+        upload_to='lessons/icons/',
+        null=True,
+        blank=True
+    )
     cover = models.ImageField(
-        'Обложка урока', null=True, blank=True, upload_to='lessons/covers/')
+        'Обложка урока',
+        upload_to='lessons/covers/',
+        null=True,
+        blank=True,
+    )
     course = models.ForeignKey(
-        to='Course', on_delete=models.CASCADE, related_name='lessons', verbose_name='Урок из курса')
+        verbose_name='Урок из курса',
+        to='Course',
+        on_delete=models.CASCADE,
+        related_name='lessons'
+    )
 
     def __str__(self):
         return self.name
@@ -51,15 +82,26 @@ class Lesson(models.Model):
 
 class Exercise(models.Model):
     """Модель упражнения."""
+
     title = models.CharField('Название задания', max_length=255)
     type_choices = [
         ('word_miss_type', 'Задание с пропуском'),
         ('translate_type', 'Задание с переводом'),
     ]
-    exercise_type = models.CharField('Тип задания', blank=True,
-                                     max_length=255, choices=type_choices, default='word_miss_type')
+    exercise_type = models.CharField(
+        'Тип задания',
+        max_length=255,
+        choices=type_choices,
+        default='word_miss_type',
+        null=True,
+        blank=True
+    )
     lesson = models.ForeignKey(
-        to='Lesson', on_delete=models.CASCADE, related_name='exercises', verbose_name='Задание из урока')
+        verbose_name='Задание из урока',
+        to='Lesson',
+        on_delete=models.CASCADE,
+        related_name='exercises'
+    )
     text = models.TextField('Текст вопроса', max_length=500)
 
     def __str__(self):
@@ -72,11 +114,16 @@ class Exercise(models.Model):
 
 
 class Answer(models.Model):
-    text = models.CharField(
-        'Текст ответа', max_length=400)
+    """Модель варианта ответа."""
+
+    text = models.CharField('Текст ответа', max_length=400)
     right = models.BooleanField('Верный ответ', default=False)
     exercise = models.ForeignKey(
-        to='Exercise', on_delete=models.CASCADE, related_name='answers', verbose_name='Вариант ответа')
+        verbose_name='Вариант ответа',
+        to='Exercise',
+        on_delete=models.CASCADE,
+        related_name='answers'
+    )
 
     def __str__(self):
         return self.text
