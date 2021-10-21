@@ -4,15 +4,195 @@ info:
   version: 1.0.0
   description: Сервис изучения английского языка
 paths:
-  /api/courses/:
+  /api/schema/:
     get:
-      operationId: api_courses_list
-      description: Контроллер выдает список курсов, и отдельный курс по pk.
+      operationId: api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/auth/google/:
+    post:
+      operationId: api_v1_auth_google_create
+      description: Подтверждение авторизации через гугл.
+      tags:
+      - api
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/me/:
+    get:
+      operationId: api_v1_auth_me_retrieve
+      description: Просмотр и редактирование данных пользовталя.
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: api_v1_auth_me_update
+      description: Просмотр и редактирование данных пользовталя.
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/main/courses/:
+    get:
+      operationId: api_v1_main_courses_list
+      description: Cписок курсов, и отдельный курс по pk.
+      tags:
+      - api
+      security:
       - {}
       responses:
         '200':
@@ -23,10 +203,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Course'
           description: ''
-  /api/courses/{id}/:
+  /api/v1/main/courses/{id}/:
     get:
-      operationId: api_courses_retrieve
-      description: Контроллер выдает список курсов, и отдельный курс по pk.
+      operationId: api_v1_main_courses_retrieve
+      description: Cписок курсов, и отдельный курс по pk.
       parameters:
       - in: path
         name: id
@@ -37,8 +217,6 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
       - {}
       responses:
         '200':
@@ -47,32 +225,47 @@ paths:
               schema:
                 $ref: '#/components/schemas/Course'
           description: ''
-  /auth/api/v1/google/:
-    post:
-      operationId: auth_api_v1_google_create
-      description: Подтверждение авторизации через гугл
-      tags:
-      - auth
-      security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
-      responses:
-        '200':
-          description: No response body
   /google/:
     post:
       operationId: google_create
-      description: Подтверждение авторизации через гугл
+      description: Подтверждение авторизации через гугл.
       tags:
       - google
       security:
-      - cookieAuth: []
-      - basicAuth: []
       - {}
       responses:
         '200':
           description: No response body
+  /me/:
+    get:
+      operationId: me_retrieve
+      description: Просмотр и редактирование данных пользовталя.
+      tags:
+      - me
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: me_update
+      description: Просмотр и редактирование данных пользовталя.
+      tags:
+      - me
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
 components:
   schemas:
     Answer:
@@ -200,11 +393,30 @@ components:
     NullEnum:
       enum:
       - null
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: sessionid
+    User:
+      type: object
+      properties:
+        display_name:
+          type: string
+          nullable: true
+          title: Имя
+          maxLength: 30
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          title: Аватар
+          pattern: (?:jpg|png)$
+        age:
+          type: integer
+          maximum: 100
+          minimum: 0
+          nullable: true
+          title: Возраст
+        level:
+          nullable: true
+          title: Уровень
+          oneOf:
+          - $ref: '#/components/schemas/LevelEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
