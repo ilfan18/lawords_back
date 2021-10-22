@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'courses',
-    'oauth',
 
     'drf_spectacular',
 ]
@@ -121,7 +120,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # DRF
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('oauth.services.auth_backend.AuthBackend',),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'
     ],
@@ -183,6 +181,5 @@ JAZZMIN_SETTINGS = {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-users-cog",
         "auth.Group": "fas fa-users-cog",
-        "oauth.authuser": "fas fa-users",
     },
 }

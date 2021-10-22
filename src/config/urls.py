@@ -6,10 +6,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 from rest_framework.routers import DefaultRouter
 
 urlpatterns = [
-    # * Это временно
-    path('', include('oauth.urls')),
     path('api/v1/', include([
-        path('auth/', include('oauth.urls')),
         path('main/', include('courses.urls')),
     ])),
     path('admin/', admin.site.urls),
