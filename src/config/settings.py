@@ -3,10 +3,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'pw+*a^45y7s_f(im29%4ot2222m1h7zed4w+$03_trf4)0)!l!'
 
@@ -27,11 +23,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework.authtoken',
+    'drf_spectacular',
     'corsheaders',
+    'djoser',
 
     'courses',
-
-    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -116,10 +113,32 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # DRF
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny'
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# SimpleJWT
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+}
+
+# smtp
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'ilfanmuratov@gmail.com'
+EMAIL_HOST_PASSWORD = 'annyiaqgxwrdldfc'
+EMAIL_PORT = 587
+
+# Djoser
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SERIALIZERS': {}
 }
 
 # drf-spectacular
@@ -129,47 +148,24 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 }
 
-# PyJWT
-ALGORITHM = 'HS256'
-ACCESS_TOKEN_EXPIRE_MINUTES = 60*24
-
 # Google auth
 GOOGLE_CLIENT_ID = '75953706797-gd7cqpdj4kor1f87hpmmln985mhmll4p.apps.googleusercontent.com'
 
 # Admin settings
 JAZZMIN_SETTINGS = {
-    # title of the window (Will default to current_admin_site.site_title if absent or None)
     'site_title': 'Lawords admin',
-
-    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     'site_header': 'Lawords',
-
-    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     'site_brand': 'Lawords',
-
-    # Logo to use for your site, must be present in static files, used for brand on top left
     'site_logo': 'logo.png',
-
-    # CSS classes that are applied to the logo above
     'site_logo_classes': '',
-
     #! Про это уточнить
     "show_ui_builder": True,
-
-    ############
-    # Top Menu #
-    ############
-
-    # Links to put along the top menu
     "topmenu_links": [
         {"name": "Свагер",  "url": "swagger-ui",
             "permissions": ["auth.view_user"]},
         {"name": "Дока",  "url": "redoc",
             "permissions": ["auth.view_user"]},
     ],
-
-    # Custom icons for side menu apps/models See https://fontawesome.com/icons?d=gallery&m=free&v=5.0.0,5.0.1,5.0.10,5.0.11,5.0.12,5.0.13,5.0.2,5.0.3,5.0.4,5.0.5,5.0.6,5.0.7,5.0.8,5.0.9,5.1.0,5.1.1,5.2.0,5.3.0,5.3.1,5.4.0,5.4.1,5.4.2,5.13.0,5.12.0,5.11.2,5.11.1,5.10.0,5.9.0,5.8.2,5.8.1,5.7.2,5.7.1,5.7.0,5.6.3,5.5.0,5.4.2
-    # for the full list of 5.13.0 free icon classes
     "icons": {
         "courses.course": "fas fa-box",
         "courses.lesson": "fas fa-book-open",

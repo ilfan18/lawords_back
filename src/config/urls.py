@@ -10,6 +10,10 @@ urlpatterns = [
         path('main/', include('courses.urls')),
     ])),
     path('admin/', admin.site.urls),
+    # * Авторизация
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
+    path('auth/', include('djoser.urls.jwt')),
     # * Документация
     path('', include('spectacular.urls')),
 ]
