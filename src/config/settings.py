@@ -28,6 +28,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
 
+    'oauth2_provider',
+    'social_django',
+    'rest_framework_social_oauth2',
+
     'courses',
 ]
 
@@ -55,6 +59,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -74,6 +80,8 @@ DATABASES = {
     }
 }
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -90,6 +98,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Add needed from https://python-social-auth.readthedocs.io/en/latest/backends/index.html#supported-backends
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
 # Internationalization
 LANGUAGE_CODE = 'ru'
 
@@ -105,7 +121,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = ["static/logo/", ]
+STATICFILES_DIRS = ['static/logo/', ]
 
 # Media files
 MEDIA_URL = '/media/'
@@ -116,6 +132,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
@@ -138,7 +156,15 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
-    'SERIALIZERS': {}
+    'SERIALIZERS': {},
+    'EMAIL': {
+        'activation': 'services.email.ActivationEmail',
+        'confirmation': 'djoser.email.ConfirmationEmail',
+        'password_reset': 'djoser.email.PasswordResetEmail',
+        'password_changed_confirmation': 'djoser.email.PasswordChangedConfirmationEmail',
+        'username_changed_confirmation': 'djoser.email.UsernameChangedConfirmationEmail',
+        'username_reset': 'djoser.email.UsernameResetEmail',
+    },
 }
 
 # drf-spectacular
@@ -148,8 +174,12 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 }
 
-# Google auth
-GOOGLE_CLIENT_ID = '75953706797-gd7cqpdj4kor1f87hpmmln985mhmll4p.apps.googleusercontent.com'
+#  Django REST Framework Social OAuth2
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+#     'email'
+# ]
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '75953706797-gd7cqpdj4kor1f87hpmmln985mhmll4p.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
 # Admin settings
 JAZZMIN_SETTINGS = {
@@ -159,19 +189,19 @@ JAZZMIN_SETTINGS = {
     'site_logo': 'logo.png',
     'site_logo_classes': '',
     #! Про это уточнить
-    "show_ui_builder": True,
-    "topmenu_links": [
-        {"name": "Свагер",  "url": "swagger-ui",
-            "permissions": ["auth.view_user"]},
-        {"name": "Дока",  "url": "redoc",
-            "permissions": ["auth.view_user"]},
+    'show_ui_builder': True,
+    'topmenu_links': [
+        {'name': 'Свагер',  'url': 'swagger-ui',
+            'permissions': ['auth.view_user']},
+        {'name': 'Дока',  'url': 'redoc',
+            'permissions': ['auth.view_user']},
     ],
-    "icons": {
-        "courses.course": "fas fa-box",
-        "courses.lesson": "fas fa-book-open",
-        "courses.exercise": "fas fa-grip-horizontal",
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-users-cog",
-        "auth.Group": "fas fa-users-cog",
+    'icons': {
+        'courses.course': 'fas fa-box',
+        'courses.lesson': 'fas fa-book-open',
+        'courses.exercise': 'fas fa-grip-horizontal',
+        'auth': 'fas fa-users-cog',
+        'auth.user': 'fas fa-users-cog',
+        'auth.Group': 'fas fa-users-cog',
     },
 }

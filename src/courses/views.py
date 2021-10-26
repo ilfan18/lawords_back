@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from .models import Course
 from .serializers import CourseSerializer
+from django.shortcuts import render
 
 
 class APICourseViewSet(ReadOnlyModelViewSet):
@@ -11,3 +12,7 @@ class APICourseViewSet(ReadOnlyModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+def login_view(request):
+    return render(request, 'login/login.html')

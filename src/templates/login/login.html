@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id" content="75953706797-gd7cqpdj4kor1f87hpmmln985mhmll4p.apps.googleusercontent.com">
+    <title>Document</title>
+</head>
+<body>
+    
+<div id="my-signin"></div>
+
+<script>
+function onSuccess(googleUser) {
+    let profile = googleUser.getBasicProfile()
+    console.log(profile.getEmail())
+    let token = googleUser.Zb.access_token
+    console.log(googleUser)
+    fetch('http://localhost:8000/auth/convert-token/', {
+        method:'POST',
+        headers:{'Content-Type':'application/json;charset=UTF-8'},
+        body:JSON.stringify({
+            grant_type:'convert_token',
+            client_id:'keqUXusgtWUcQoRDcvl5FWAserXGnnz3ZBFMBkNv',
+            backend:'google-oauth2',
+            token:token
+        })
+    })
+    .then(res=>console.log(res))
+    .then(data=>console.log('ID: '+ data.user_id+'\nToken: '+data.access_token))
+}
+
+function onFailure(error) {
+    console.log('Error'+error)
+}
+
+function renderButton(){
+    gapi.signin2.render('my-signin',{
+        'scope':'profile email',
+        'width':240,
+        'height':50,
+        'longtitle':true,
+        'theme':'dark',
+        'onsuccess':onSuccess,
+        'onfailure':onFailure
+    })
+}
+</script>
+
+<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+</body>
+</html>

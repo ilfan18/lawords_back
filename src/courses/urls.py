@@ -7,4 +7,5 @@ router.register(r'courses', APICourseViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('login', login_view),
 ]
