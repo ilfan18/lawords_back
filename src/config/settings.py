@@ -204,4 +204,5 @@ JAZZMIN_SETTINGS = {
         'auth.user': 'fas fa-users-cog',
         'auth.Group': 'fas fa-users-cog',
     },
+    "order_with_respect_to": ["courses", "auth"],
 }
