@@ -3,9 +3,9 @@ from rest_framework.routers import DefaultRouter
 from .views import *
 
 router = DefaultRouter()
-router.register(r'courses', APICourseViewSet)
+router.register('courses', APICourseViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('login', login_view),
+    # path('login', login_view),
 ]

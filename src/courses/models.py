@@ -18,13 +18,11 @@ class Course(models.Model):
         max_length=255,
         choices=level_choices,
         default='beginner',
-        null=True,
         blank=True
     )
     new_words = models.PositiveIntegerField(
         'Число новых слов',
         default=0,
-        null=True,
         blank=True
     )
     icon = models.ImageField(
@@ -70,7 +68,8 @@ class Lesson(models.Model):
         to='Course',
         on_delete=models.CASCADE,
         related_name='lessons',
-        blank=True
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
@@ -96,7 +95,6 @@ class Exercise(models.Model):
         max_length=255,
         choices=type_choices,
         default='word_miss_type',
-        null=True,
         blank=True
     )
     lesson = models.ForeignKey(
