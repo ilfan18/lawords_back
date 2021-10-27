@@ -6,6 +6,7 @@ class Course(models.Model):
 
     name = models.CharField('Название курса', max_length=255)
     level_choices = [
+        ('', 'Выберите уровень курса'),
         ('beginner', 'Beginner'),
         ('elementary', 'Elementary'),
         ('intermediate', 'Intermediate'),
@@ -68,7 +69,8 @@ class Lesson(models.Model):
         verbose_name='Урок из курса',
         to='Course',
         on_delete=models.CASCADE,
-        related_name='lessons'
+        related_name='lessons',
+        blank=True
     )
 
     def __str__(self):
@@ -85,6 +87,7 @@ class Exercise(models.Model):
 
     title = models.CharField('Название задания', max_length=255)
     type_choices = [
+        ('', 'Выберите тип задания'),
         ('word_miss_type', 'Задание с пропуском'),
         ('translate_type', 'Задание с переводом'),
     ]

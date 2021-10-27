@@ -10,6 +10,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
     level_choices = [
+        ('', 'Выберите уровень'),
         ('beginner', 'Beginner'),
         ('elementary', 'Elementary'),
         ('intermediate', 'Intermediate'),
@@ -32,6 +33,16 @@ class Profile(models.Model):
         validators=[
             MaxValueValidator(limit_value=100, message='Недопустимое значение')
         ]
+    )
+    courses = models.ManyToManyField(
+        verbose_name='Выполненные курсы',
+        to='courses.Course',
+        related_name='users'
+    )
+    lessons = models.ManyToManyField(
+        verbose_name='Выполненные уроки',
+        to='courses.Lesson',
+        related_name='users'
     )
 
     def __str__(self):
