@@ -7,9 +7,9 @@ from rest_framework.routers import DefaultRouter
 
 urlpatterns = [
     path('api/v1/', include([
-        path('main/', include('courses.urls')),
+        path('', include('courses.urls')),
+        path('', include('users.urls')),
     ])),
-    path('', include('courses.urls')),
     path('admin/', admin.site.urls),
     # * Авторизация
     path('auth/', include('djoser.urls')),

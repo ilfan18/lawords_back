@@ -7,8 +7,19 @@ from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    user = models.OneToOneField(
+        verbose_name='Пользователь',
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='lessons',
+    )
+    image = models.ImageField(
+        'Аватар',
+        upload_to='profile_pics',
+        default='default.jpg',
+        null=True,
+        blank=True,
+    )
     level_choices = [
         ('', 'Выберите уровень'),
         ('beginner', 'Beginner'),
@@ -22,14 +33,13 @@ class Profile(models.Model):
         max_length=500,
         choices=level_choices,
         default='beginner',
-        null=True,
         blank=True,
     )
     age = models.PositiveIntegerField(
         'Возраст',
+        default=18,
         null=True,
         blank=True,
-        default=18,
         validators=[
             MaxValueValidator(limit_value=100, message='Недопустимое значение')
         ]
@@ -37,12 +47,14 @@ class Profile(models.Model):
     courses = models.ManyToManyField(
         verbose_name='Выполненные курсы',
         to='courses.Course',
-        related_name='users'
+        related_name='users',
+        blank=True
     )
     lessons = models.ManyToManyField(
         verbose_name='Выполненные уроки',
         to='courses.Lesson',
-        related_name='users'
+        related_name='users',
+        blank=True
     )
 
     def __str__(self):
