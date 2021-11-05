@@ -11,7 +11,7 @@ class Profile(models.Model):
         verbose_name='Пользователь',
         to=User,
         on_delete=models.CASCADE,
-        related_name='lessons',
+        related_name='profile',
     )
     image = models.ImageField(
         'Аватар',
