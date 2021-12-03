@@ -1,4 +1,5 @@
 import os
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -142,13 +143,19 @@ REST_FRAMEWORK = {
 # SimpleJWT
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=30),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': False,
 }
 
 # smtp
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'ilfanmuratov@gmail.com'
-EMAIL_HOST_PASSWORD = 'annyiaqgxwrdldfc'
+EMAIL_HOST_PASSWORD = 'qizbtrgtjfdrxtmn'
+DEFAULT_FROM_EMAIL = 'ilfanmuratov@gmail.com'
 EMAIL_PORT = 587
 
 # Djoser
@@ -156,7 +163,8 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': True,
+    # ! Временно, пока не разобрался с отправкой писем
+    'SEND_ACTIVATION_EMAIL': False,
     'SERIALIZERS': {},
     'EMAIL': {
         'activation': 'services.email.ActivationEmail',
@@ -181,6 +189,9 @@ SPECTACULAR_SETTINGS = {
 # ]
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '75953706797-gd7cqpdj4kor1f87hpmmln985mhmll4p.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+# Corsheaders
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Admin settings
 JAZZMIN_SETTINGS = {

@@ -8,4 +8,4 @@ class APIProfileInfoViewSet(ReadOnlyModelViewSet):
     """Cписок профилей, и отдельный профиль по pk."""
     queryset = Profile.objects.all()
     serializer_class = ProfileInfoSerializer
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
