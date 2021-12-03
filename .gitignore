@@ -17,5 +17,5 @@ celerybeat-schedule
 env/
 *.ini
 !*media/.gitkeep
-media/*
+*/media/*
 src/static/
