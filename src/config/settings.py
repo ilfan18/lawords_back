@@ -84,6 +84,7 @@ DATABASES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
+AUTH_USER_MODEL = 'users.User'
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -143,7 +144,7 @@ REST_FRAMEWORK = {
 # SimpleJWT
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=30),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(seconds=600),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
@@ -165,7 +166,9 @@ DJOSER = {
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
     # ! Временно, пока не разобрался с отправкой писем
     'SEND_ACTIVATION_EMAIL': False,
-    'SERIALIZERS': {},
+    'SERIALIZERS': {
+        'current_user': 'users.serializers.UserSerializer',
+    },
     'EMAIL': {
         'activation': 'services.email.ActivationEmail',
         'confirmation': 'djoser.email.ConfirmationEmail',
@@ -184,9 +187,6 @@ SPECTACULAR_SETTINGS = {
 }
 
 #  Django REST Framework Social OAuth2
-# SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
-#     'email'
-# ]
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '75953706797-gd7cqpdj4kor1f87hpmmln985mhmll4p.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
@@ -212,8 +212,8 @@ JAZZMIN_SETTINGS = {
         'courses.course': 'fas fa-box',
         'courses.lesson': 'fas fa-book-open',
         'courses.exercise': 'fas fa-grip-horizontal',
+        'users.user': 'fas fa-user',
         'auth': 'fas fa-users-cog',
-        'auth.user': 'fas fa-users-cog',
         'auth.Group': 'fas fa-users-cog',
     },
     "order_with_respect_to": ['courses', 'users', 'auth'],
