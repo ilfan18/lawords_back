@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'rest_framework_social_oauth2',
 
     'courses',
-    'users'
+    'users',
+    'user_auth'
 ]
 
 MIDDLEWARE = [
@@ -164,23 +165,23 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # DEFAULT_FROM_EMAIL = 'ilfanmuratov@gmail.com'
 
 # Djoser
-DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': '#/activate/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': True,
-    'SERIALIZERS': {
-        'current_user': 'users.serializers.UserSerializer',
-    },
-    'EMAIL': {
-        # 'activation': 'services.email.ActivationEmail',
-        'confirmation': 'djoser.email.ConfirmationEmail',
-        'password_reset': 'djoser.email.PasswordResetEmail',
-        'password_changed_confirmation': 'djoser.email.PasswordChangedConfirmationEmail',
-        'username_changed_confirmation': 'djoser.email.UsernameChangedConfirmationEmail',
-        'username_reset': 'djoser.email.UsernameResetEmail',
-    },
-}
+# DJOSER = {
+#     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+#     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+#     'ACTIVATION_URL': '#/activate/{uid}/{token}',
+#     'SEND_ACTIVATION_EMAIL': True,
+#     'SERIALIZERS': {
+#         'current_user': 'users.serializers.UserSerializer',
+#     },
+#     'EMAIL': {
+#         # 'activation': 'services.email.ActivationEmail',
+#         'confirmation': 'djoser.email.ConfirmationEmail',
+#         'password_reset': 'djoser.email.PasswordResetEmail',
+#         'password_changed_confirmation': 'djoser.email.PasswordChangedConfirmationEmail',
+#         'username_changed_confirmation': 'djoser.email.UsernameChangedConfirmationEmail',
+#         'username_reset': 'djoser.email.UsernameResetEmail',
+#     },
+# }
 
 # drf-spectacular
 SPECTACULAR_SETTINGS = {
