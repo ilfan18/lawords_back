@@ -10,6 +10,8 @@ SECRET_KEY = 'pw+*a^45y7s_f(im29%4ot2222m1h7zed4w+$03_trf4)0)!l!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+SITE_NAME = "Lawords"
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -152,25 +154,26 @@ SIMPLE_JWT = {
 }
 
 # smtp
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'ilfanmuratov@gmail.com'
-EMAIL_HOST_PASSWORD = 'qizbtrgtjfdrxtmn'
-DEFAULT_FROM_EMAIL = 'ilfanmuratov@gmail.com'
-EMAIL_PORT = 587
+# ! Временно, пока не разобрался с отправкой писем
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'ilfanmuratov@gmail.com'
+# EMAIL_HOST_PASSWORD = 'iqonzzedjmlygqkv'
+# DEFAULT_FROM_EMAIL = 'ilfanmuratov@gmail.com'
 
 # Djoser
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
-    # ! Временно, пока не разобрался с отправкой писем
-    'SEND_ACTIVATION_EMAIL': False,
+    'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {
         'current_user': 'users.serializers.UserSerializer',
     },
     'EMAIL': {
-        'activation': 'services.email.ActivationEmail',
+        # 'activation': 'services.email.ActivationEmail',
         'confirmation': 'djoser.email.ConfirmationEmail',
         'password_reset': 'djoser.email.PasswordResetEmail',
         'password_changed_confirmation': 'djoser.email.PasswordChangedConfirmationEmail',
