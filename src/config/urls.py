@@ -11,7 +11,9 @@ urlpatterns = [
     ])),
     path('admin/', admin.site.urls),
     # * Экспирементальная авторизация
-    path('auth/', include('users.urls')),
+    path('auth/', include('users_auth.urls')),
+    # * Экспирементальное обслуживание пользователя
+    path('users/', include('users.urls')),
     # * Авторизация
     # path('auth/', include('djoser.urls')),
     # path('auth/', include('djoser.urls.authtoken')),
