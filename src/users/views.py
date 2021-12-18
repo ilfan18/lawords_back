@@ -19,13 +19,13 @@ class UserMeView(views.APIView):
 
     def get(self, request):
         """Get current user."""
-        serializer = UserSerializer(request.user)
+        serializer = UserSerializer(self.get_object())
         return Response(serializer.data)
 
     def put(self, request):
         """Update current user."""
 
-        serializer = UserSerializer(request.user, data=request.data)
+        serializer = UserSerializer(self.get_object(), data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -36,9 +36,12 @@ class UserMeView(views.APIView):
         """Partial update current user."""
 
         serializer = UserSerializer(
-            request.user, data=request.data, partial=True)
+            self.get_object(), data=request.data, partial=True)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)
+
+    def get_object(self):
+        return self.request.user
