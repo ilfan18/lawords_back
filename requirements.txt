@@ -25,7 +25,6 @@ django-rest-framework-social-oauth2==1.1.0
 django-templated-mail==1.1.1
 djangorestframework==3.12.4
 djangorestframework-simplejwt==4.8.0
-djoser==2.1.0
 drf-spectacular==0.20.2
 google-auth==2.3.0
 gunicorn==20.1.0
