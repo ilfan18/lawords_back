@@ -23,21 +23,22 @@ class UserMeView(views.APIView):
         return Response(serializer.data)
 
     def put(self, request):
-        """Get current user."""
-        # !Не готово
-        serializer = UserSerializer(data=request.data)
+        """Update current user."""
+
+        serializer = UserSerializer(request.user, data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            print('his')
+            serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)
 
     def patch(self, request):
-        """Get current user."""
-        # !Не готово
-        serializer = UserSerializer(data=request.data)
+        """Partial update current user."""
+
+        serializer = UserSerializer(
+            request.user, data=request.data, partial=True)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            user = request.user.update(**serializer.data)
+            serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)
