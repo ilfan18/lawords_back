@@ -29,7 +29,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_spectacular',
     'corsheaders',
-    'djoser',
 
     'oauth2_provider',
     'social_django',
@@ -164,24 +163,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_PASSWORD = 'iqonzzedjmlygqkv'
 # DEFAULT_FROM_EMAIL = 'ilfanmuratov@gmail.com'
 
-# Djoser
-# DJOSER = {
-#     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-#     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
-#     'ACTIVATION_URL': '#/activate/{uid}/{token}',
-#     'SEND_ACTIVATION_EMAIL': True,
-#     'SERIALIZERS': {
-#         'current_user': 'users.serializers.UserSerializer',
-#     },
-#     'EMAIL': {
-#         # 'activation': 'services.email.ActivationEmail',
-#         'confirmation': 'djoser.email.ConfirmationEmail',
-#         'password_reset': 'djoser.email.PasswordResetEmail',
-#         'password_changed_confirmation': 'djoser.email.PasswordChangedConfirmationEmail',
-#         'username_changed_confirmation': 'djoser.email.UsernameChangedConfirmationEmail',
-#         'username_reset': 'djoser.email.UsernameResetEmail',
-#     },
-# }
+#  Django REST Framework Social OAuth2
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '75953706797-gd7cqpdj4kor1f87hpmmln985mhmll4p.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+# Corsheaders
+CORS_ORIGIN_ALLOW_ALL = True
 
 # drf-spectacular
 SPECTACULAR_SETTINGS = {
@@ -189,13 +176,6 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Сервис изучения английского языка',
     'VERSION': '1.0.0',
 }
-
-#  Django REST Framework Social OAuth2
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '75953706797-gd7cqpdj4kor1f87hpmmln985mhmll4p.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
-
-# Corsheaders
-CORS_ORIGIN_ALLOW_ALL = True
 
 # Admin settings
 JAZZMIN_SETTINGS = {
