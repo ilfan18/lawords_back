@@ -20,7 +20,7 @@ class UserMeView(views.APIView):
     def get(self, request):
         """Get current user."""
         serializer = UserSerializer(self.get_object())
-        return Response(serializer.data)
+        return Response(serializer.data, status.HTTP_200_OK)
 
     def put(self, request):
         """Update current user."""
@@ -30,7 +30,7 @@ class UserMeView(views.APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             serializer.save()
-            return Response(serializer.data, status.HTTP_200_OK)
+            return Response(serializer.data, status.HTTP_201_CREATED)
 
     def patch(self, request):
         """Partial update current user."""
@@ -42,6 +42,11 @@ class UserMeView(views.APIView):
         else:
             serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)
+
+    def delete(self, request):
+        """Destroy current user."""
+        request.user.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
 
     def get_object(self):
         return self.request.user
