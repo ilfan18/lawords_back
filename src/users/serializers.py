@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.contrib.auth.validators import ASCIIUsernameValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,3 +15,38 @@ class UserSerializer(serializers.ModelSerializer):
             'groups',
             'user_permissions',
         )
+
+
+class UsernameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('username')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['new_username'] = self.fields.pop('username')
+
+    def save(self, **kwargs):
+        kwargs['username'] = self.validated_data.get('new_username')
+        return super().save(**kwargs)
+
+
+class CurrentPasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(style={'input_type': 'password'})
+
+    default_error_messages = {
+        'invalid_password': 'Password is not vallid.'
+    }
+
+    def validate_currrent_password(self, value):
+        is_password_valid = self.context['request'].user.check_password(value)
+        if is_password_valid:
+            return value
+        else:
+            self.fail('invalid_password')
+
+
+class SetUsernameSerializer(UsernameSerializer, CurrentPasswordSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'current_password')
