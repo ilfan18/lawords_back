@@ -5,6 +5,7 @@ from .models import User
 from .serializers import (
     UserSerializer,
     SetUsernameSerializer,
+    SetPasswordSerializer,
 )
 
 
@@ -68,16 +69,41 @@ class UserMeView(views.APIView):
 
 
 class UserMeSetUsernameView(views.APIView):
-    """Edit current user's password."""
+    """Edit current user's username."""
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = SetUsernameSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(
+            data=request.data,
+            context={'request': request}
+        )
         user = request.user
         if serializer.is_valid():
             new_username = serializer.data['new_username']
             setattr(user, 'username', new_username)
+            user.save()
+            response = UserSerializer(user)
+            return Response(response.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserMeSetPasswordView(views.APIView):
+    """Edit current user's password."""
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = SetPasswordSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(
+            data=request.data,
+            context={'request': request}
+        )
+        user = request.user
+        if serializer.is_valid():
+            new_password = serializer.data['new_password']
+            user.set_password(new_password)
             user.save()
             response = UserSerializer(user)
             return Response(response.data, status=status.HTTP_200_OK)
