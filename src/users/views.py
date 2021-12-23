@@ -1,19 +1,35 @@
-from rest_framework import views, viewsets, generics, status
+from rest_framework import views, viewsets, status
 from rest_framework.response import Response
 from rest_framework import permissions
-from .models import User
+from django.contrib.auth import get_user_model
 from .serializers import (
     UserSerializer,
     SetUsernameSerializer,
     SetPasswordSerializer,
 )
+from .services import send_activation_email
 
 
 class UserViewSet(viewsets.ModelViewSet):
     """User view set"""
 
-    queryset = User.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+        send_activation_email(user, request)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+
+def activate(request, uidb64, token):
+    return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
 
 
 class UserMeView(views.APIView):

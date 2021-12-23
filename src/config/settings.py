@@ -155,13 +155,14 @@ SIMPLE_JWT = {
 
 # smtp
 # ! Временно, пока не разобрался с отправкой писем
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'ilfanmuratov@gmail.com'
-# EMAIL_HOST_PASSWORD = 'iqonzzedjmlygqkv'
-# DEFAULT_FROM_EMAIL = 'ilfanmuratov@gmail.com'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# MAILER_EMAIL_BACKEND = EMAIL_BACKEND
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PASSWORD = 'iqonzzedjmlygqkv'
+EMAIL_HOST_USER = 'ilfanmuratov@gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = 'ilfanmuratov@gmail.com'
 
 #  Django REST Framework Social OAuth2
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '75953706797-gd7cqpdj4kor1f87hpmmln985mhmll4p.apps.googleusercontent.com'
