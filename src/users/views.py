@@ -1,13 +1,18 @@
 from rest_framework import views, viewsets, status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import permissions
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
 from .serializers import (
     UserSerializer,
     SetUsernameSerializer,
     SetPasswordSerializer,
 )
-from .services import send_activation_email
+from .services import (
+    send_activation_email,
+    get_user_uidb64
+)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -28,8 +33,15 @@ class UserViewSet(viewsets.ModelViewSet):
         return serializer.save()
 
 
+@api_view(('POST',))
 def activate(request, uidb64, token):
-    return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+    user = get_user_uidb64(uidb64)
+    if user and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return Response(status=status.HTTP_200_OK,)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserMeView(views.APIView):
@@ -55,7 +67,7 @@ class UserMeView(views.APIView):
             context={'request': request}
         )
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         else:
             serializer.save()
             return Response(serializer.data, status.HTTP_201_CREATED)
@@ -70,7 +82,7 @@ class UserMeView(views.APIView):
             context={'request': request}
         )
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         else:
             serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)
@@ -100,10 +112,9 @@ class UserMeSetUsernameView(views.APIView):
             setattr(user, 'username', new_username)
             user.save()
             response = UserSerializer(user)
-            return Response(response.data, status=status.HTTP_200_OK)
+            return Response(response.data, status.HTTP_200_OK)
         else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
 class UserMeSetPasswordView(views.APIView):
@@ -122,7 +133,6 @@ class UserMeSetPasswordView(views.APIView):
             user.set_password(new_password)
             user.save()
             response = UserSerializer(user)
-            return Response(response.data, status=status.HTTP_200_OK)
+            return Response(response.data, status.HTTP_200_OK)
         else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
