@@ -15,9 +15,6 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import views, viewsets, status
-<< << << < HEAD
-== == == =
->>>>>> > 957b9f398d26d7a6f168bda4090039cb694d0015
 
 
 class UserViewSet(viewsets.ModelViewSet):
