@@ -1,13 +1,19 @@
 from rest_framework import views, viewsets, status
+from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework import permissions
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
 from .serializers import (
     UserSerializer,
     SetUsernameSerializer,
     SetPasswordSerializer,
 )
-from .services import send_activation_email
+from .services import (
+    send_activation_email,
+    get_user_uidb64
+)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -20,7 +26,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = self.perform_create(serializer)
-        send_activation_email(user, request)
+        send_activation_email(request, user)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -28,8 +34,31 @@ class UserViewSet(viewsets.ModelViewSet):
         return serializer.save()
 
 
-def activate(request, uidb64, token):
-    return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+@api_view(('POST',))
+def user_activate(request):
+    """Activate user. Takes uidb64 and token"""
+    user = get_user_uidb64(request.data.get('uidb64'))
+    if user and default_token_generator.check_token(user, request.data.get('token')):
+        user.is_active = True
+        user.save()
+        return Response(status=status.HTTP_200_OK)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(('POST',))
+def resend_activation(request):
+    """Resend activation email. Takes uid."""
+    try:
+        user = get_user_model(). _default_manager.get(
+            request.data.get('uid')
+        )
+    except(User.DoesNotExist):
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    user.is_active = False
+    user.save()
+    send_activation_email(request, user)
+    return Response(status=status.HTTP_200_OK)
 
 
 class UserMeView(views.APIView):
@@ -55,7 +84,7 @@ class UserMeView(views.APIView):
             context={'request': request}
         )
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         else:
             serializer.save()
             return Response(serializer.data, status.HTTP_201_CREATED)
@@ -70,7 +99,7 @@ class UserMeView(views.APIView):
             context={'request': request}
         )
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         else:
             serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)
@@ -100,10 +129,9 @@ class UserMeSetUsernameView(views.APIView):
             setattr(user, 'username', new_username)
             user.save()
             response = UserSerializer(user)
-            return Response(response.data, status=status.HTTP_200_OK)
+            return Response(response.data, status.HTTP_200_OK)
         else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
 class UserMeSetPasswordView(views.APIView):
@@ -122,7 +150,6 @@ class UserMeSetPasswordView(views.APIView):
             user.set_password(new_password)
             user.save()
             response = UserSerializer(user)
-            return Response(response.data, status=status.HTTP_200_OK)
+            return Response(response.data, status.HTTP_200_OK)
         else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)

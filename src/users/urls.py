@@ -5,7 +5,8 @@ from .views import (
     UserMeView,
     UserMeSetUsernameView,
     UserMeSetPasswordView,
-    activate
+    user_activate,
+    resend_activation
 )
 
 router = SimpleRouter()
@@ -17,6 +18,7 @@ urlpatterns = [
          name='user-me-username-set'),
     path('me/set_password/', UserMeSetPasswordView.as_view(),
          name='user-me-password-set'),
-    path('activate/<uidb64>/<token>/', activate, name='activate'),
+    path('activate/', user_activate, name='activate'),
+    path('resend/', resend_activation),
 ]
 urlpatterns += router.urls

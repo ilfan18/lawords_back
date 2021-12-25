@@ -164,6 +164,11 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = 'ilfanmuratov@gmail.com'
 
+# My user settings
+CUSTOM_USER_SYSTEM = {
+
+}
+
 #  Django REST Framework Social OAuth2
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '75953706797-gd7cqpdj4kor1f87hpmmln985mhmll4p.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
