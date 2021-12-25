@@ -39,9 +39,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 @api_view(('POST',))
-<< << << < HEAD
-
-
 def user_activate(request):
     """Activate user. Takes uidb64 and token"""
     user = get_user_uidb64(request.data.get('uidb64'))
@@ -66,9 +63,6 @@ def resend_activation(request):
     user.save()
     send_activation_email(request, user)
     return Response(status=status.HTTP_200_OK)
-
-
-== == == =
 
 
 class UserMeView(views.APIView):
