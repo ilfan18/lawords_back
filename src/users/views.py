@@ -1,19 +1,23 @@
-from rest_framework import views, viewsets, status
-from rest_framework.decorators import api_view, permission_classes
-from django.contrib.auth.models import User
-from rest_framework.response import Response
-from rest_framework import permissions
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth import get_user_model
+from .services import (
+    send_activation_email,
+    get_user_uidb64
+)
 from .serializers import (
     UserSerializer,
     SetUsernameSerializer,
     SetPasswordSerializer,
 )
-from .services import (
-    send_activation_email,
-    get_user_uidb64
-)
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from rest_framework import permissions
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from django.contrib.auth.models import User
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import views, viewsets, status
+<< << << < HEAD
+== == == =
+>>>>>> > 957b9f398d26d7a6f168bda4090039cb694d0015
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -35,6 +39,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 @api_view(('POST',))
+<< << << < HEAD
+
+
 def user_activate(request):
     """Activate user. Takes uidb64 and token"""
     user = get_user_uidb64(request.data.get('uidb64'))
@@ -59,6 +66,9 @@ def resend_activation(request):
     user.save()
     send_activation_email(request, user)
     return Response(status=status.HTTP_200_OK)
+
+
+== == == =
 
 
 class UserMeView(views.APIView):
