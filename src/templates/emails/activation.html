@@ -1,7 +1,7 @@
 {% autoescape off %}  
 Привет, {{ user.username }}!
 Пожалуйста, прейдите по ссылке, что-бы закончить регистрацию:
-http://{{ domain }}{% url 'activate' %}{{uid}}/{{token}}/
+http://{{ domain }}/activate/{{uid}}/{{token}}/
 
 Если вам кажется, что это не вы, то проигнорируйте это сообщение.
 {% endautoescape %}

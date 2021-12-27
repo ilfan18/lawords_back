@@ -38,7 +38,7 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(('POST',))
 def user_activate(request):
     """Activate user. Takes uidb64 and token"""
-    user = get_user_uidb64(request.data.get('uidb64'))
+    user = get_user_uidb64(request.data.get('uid'))
     if user and default_token_generator.check_token(user, request.data.get('token')):
         user.is_active = True
         user.save()
@@ -51,11 +51,11 @@ def user_activate(request):
 def resend_activation(request):
     """Resend activation email. Takes uid."""
     try:
-        user = get_user_model(). _default_manager.get(
-            request.data.get('uid')
-        )
+        print(request.data.get('uid'))
+        user = get_user_model(). _default_manager.get(pk=request.data.get('uid'))
     except(User.DoesNotExist):
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    print(user)
     user.is_active = False
     user.save()
     send_activation_email(request, user)

@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
@@ -53,15 +54,17 @@ class CurrentPasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(style={'input_type': 'password'})
 
     default_error_messages = {
-        'invalid_password': 'Current password is not vallid.'
+        'invalid_password': _('Current password is not vallid.')
     }
 
-    def validate_currrent_password(self, value):
-        is_password_valid = self.context['request'].user.check_password(value)
+    def validate(self, attrs):
+        is_password_valid = self.context['request'].user.check_password(
+            attrs['current_password'])
         if is_password_valid:
-            return value
+            return super().validate(attrs)
         else:
-            self.fail('invalid_password')
+            raise serializers.ValidationError(
+                {"current_password": _('Current password isn`t correct.')})
 
 
 class SetPasswordSerializer(PasswordSerializer, CurrentPasswordSerializer):
