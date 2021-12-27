@@ -41,7 +41,6 @@ class PasswordSerializer(serializers.Serializer):
         user = self.context["request"].user or self.user
         # why assert? There are ValidationError / fail everywhere
         assert user is not None
-        print(attrs)
         try:
             validate_password(attrs['new_password'], user)
         except django_exceptions.ValidationError as e:
