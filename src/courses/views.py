@@ -1,16 +1,22 @@
+from rest_framework import views, viewsets, status
 from rest_framework import permissions
-from rest_framework.viewsets import ReadOnlyModelViewSet
-from .models import Course
-from .serializers import CourseSerializer
+from .models import Course, Lesson
+from .serializers import (
+    CourseSerializer,
+    LessonSerializer
+)
 from django.shortcuts import render
 
 
-class APICourseViewSet(ReadOnlyModelViewSet):
-    """Cписок курсов, и отдельный курс по pk."""
+class APICourseViewSet(viewsets.ReadOnlyModelViewSet):
+    """Courses list and particular course by id."""
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
-def login_view(request):
-    return render(request, 'login/login.html')
+class APILessonViewSet(viewsets.ReadOnlyModelViewSet):
+    """List of lissons by provided course id."""
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+    permission_classes = [permissions.IsAuthenticated]
