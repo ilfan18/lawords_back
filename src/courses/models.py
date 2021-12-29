@@ -1,4 +1,5 @@
 from django.db import models
+from ckeditor.fields import RichTextField
 
 
 class Course(models.Model):
@@ -51,6 +52,26 @@ class Lesson(models.Model):
     """Модель урока."""
 
     name = models.CharField('Название урока', max_length=255)
+
+    course = models.ForeignKey(
+        verbose_name='Урок из курса',
+        to='Course',
+        on_delete=models.CASCADE,
+        related_name='lessons',
+        null=True,
+        blank=True,
+    )
+
+    top_text = RichTextField(
+        'Верхний текст',
+        blank=True
+    )
+
+    main_text = RichTextField(
+        'Основной текст',
+        blank=True
+    )
+
     icon = models.ImageField(
         'Иконка урока',
         upload_to='lessons/icons/',
@@ -60,14 +81,6 @@ class Lesson(models.Model):
     cover = models.ImageField(
         'Обложка урока',
         upload_to='lessons/covers/',
-        null=True,
-        blank=True,
-    )
-    course = models.ForeignKey(
-        verbose_name='Урок из курса',
-        to='Course',
-        on_delete=models.CASCADE,
-        related_name='lessons',
         null=True,
         blank=True,
     )

@@ -16,6 +16,7 @@ urlpatterns = [
     path('auth_cosial/', include('rest_framework_social_oauth2.urls')),
     # * Документация
     path('', include('spectacular.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
 if settings.DEBUG:

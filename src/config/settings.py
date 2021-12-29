@@ -18,6 +18,8 @@ ALLOWED_HOSTS = []
 # Application definition
 INSTALLED_APPS = [
     'jazzmin',
+    'ckeditor',
+    'ckeditor_uploader',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -213,3 +215,7 @@ JAZZMIN_SETTINGS = {
     },
     "order_with_respect_to": ['courses', 'users', 'auth'],
 }
+
+# CKEDITOR
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = "uploads/"
