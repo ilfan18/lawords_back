@@ -5,7 +5,7 @@ from .models import Course, Lesson, Exercise, Answer
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ['text', 'right']
+        fields = ['text', 'right', 'id']
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
@@ -13,7 +13,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Exercise
-        fields = ['title', 'exercise_type', 'text', 'answers']
+        fields = ['title', 'exercise_type', 'text', 'answers', 'id', 'image']
 
 
 class LessonSerializer(serializers.ModelSerializer):
