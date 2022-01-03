@@ -98,10 +98,16 @@ class Exercise(models.Model):
     """Модель упражнения."""
 
     title = models.CharField('Название задания', max_length=255)
+    lesson = models.ForeignKey(
+        verbose_name='Задание из урока',
+        to='Lesson',
+        on_delete=models.CASCADE,
+        related_name='exercises'
+    )
     type_choices = [
         ('', 'Выберите тип задания'),
-        ('word_miss_type', 'Задание с пропуском'),
-        ('translate_type', 'Задание с переводом'),
+        ('word_miss_type', 'Заполнить пропуск'),
+        ('translate_type', 'Перевод с картинки'),
     ]
     exercise_type = models.CharField(
         'Тип задания',
@@ -110,13 +116,18 @@ class Exercise(models.Model):
         default='word_miss_type',
         blank=True
     )
-    lesson = models.ForeignKey(
-        verbose_name='Задание из урока',
-        to='Lesson',
-        on_delete=models.CASCADE,
-        related_name='exercises'
+    image = models.ImageField(
+        'Картинка к заданию',
+        upload_to='lessons/icons/',
+        null=True,
+        blank=True,
+        help_text='Оставьте пустым, если тип не "Перевод с картинки"'
     )
-    text = models.TextField('Текст вопроса', max_length=500)
+    text = models.TextField(
+        'Текст вопроса',
+        max_length=500,
+        help_text='Используйте "__" для пропуска'
+    )
 
     def __str__(self):
         return self.title
