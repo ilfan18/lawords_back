@@ -3,9 +3,55 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions as django_exceptions
+from .models import UserLesson
+from courses.models import Lesson
+import json
+# ! Про это узнать
+from django.db import transaction
+
+
+class UserLessonSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='lesson.id')
+
+    class Meta:
+        model = UserLesson
+        fields = ('score', 'id')
 
 
 class UserSerializer(serializers.ModelSerializer):
+    lessons = UserLessonSerializer(source='userlesson_set', many=True)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        user = get_user_model().objects.create(**validated_data)
+        if 'lessons' in self.initial_data:
+            lessons = self.initial_data.get('lessons')
+            for lesson in json.loads(lessons):
+                id = lesson.get('id')
+                score = lesson.get('score')
+                new_lesson = Lesson.objects.get(pk=id)
+                UserLesson(user=instance, lesson=new_lesson,
+                           score=score).save()
+        user.save()
+        return user
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        #! Разнести по разным сериализаторам
+        if 'lessons' in self.initial_data:
+            UserLesson.objects.filter(user=instance).delete()
+            lessons = self.initial_data.get('lessons')
+            for lesson in json.loads(lessons):
+                id = lesson.get('id')
+                score = lesson.get('score')
+                new_lesson = Lesson.objects.get(pk=id)
+                UserLesson(user=instance, lesson=new_lesson,
+                           score=score).save()
+
+        instance.__dict__.update(**validated_data)
+        instance.save()
+        return instance
+
     class Meta:
         model = get_user_model()
         exclude = (

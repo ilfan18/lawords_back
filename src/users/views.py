@@ -92,7 +92,6 @@ class UserMeView(views.APIView):
 
     def patch(self, request):
         """Partial update current user."""
-
         serializer = self.serializer_class(
             self.get_object(),
             data=request.data,
