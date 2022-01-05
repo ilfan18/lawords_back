@@ -17,12 +17,6 @@ class UserLessonSerializer(serializers.ModelSerializer):
         fields = ('score', 'id')
 
 
-class UserCourseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = get_user_model()
-        fields = ('courses',)
-
-
 class UserSerializer(serializers.ModelSerializer):
     lessons = UserLessonSerializer(source='userlesson_set', many=True)
 
