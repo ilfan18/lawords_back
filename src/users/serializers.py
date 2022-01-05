@@ -4,8 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions as django_exceptions
 from .models import UserLesson
-from courses.models import Lesson
-import json
+from courses.models import Lesson, Course
 # ! Про это узнать
 from django.db import transaction
 
@@ -18,6 +17,12 @@ class UserLessonSerializer(serializers.ModelSerializer):
         fields = ('score', 'id')
 
 
+class UserCourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('courses',)
+
+
 class UserSerializer(serializers.ModelSerializer):
     lessons = UserLessonSerializer(source='userlesson_set', many=True)
 
@@ -26,7 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
         user = get_user_model().objects.create(**validated_data)
         if 'lessons' in self.initial_data:
             lessons = self.initial_data.get('lessons')
-            for lesson in json.loads(lessons):
+            for lesson in lessons:
                 id = lesson.get('id')
                 score = lesson.get('score')
                 new_lesson = Lesson.objects.get(pk=id)
@@ -38,15 +43,27 @@ class UserSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         #! Разнести по разным сериализаторам
+        #! Может добавить несколько одинаковых
         if 'lessons' in self.initial_data:
             UserLesson.objects.filter(user=instance).delete()
             lessons = self.initial_data.get('lessons')
-            for lesson in json.loads(lessons):
+
+            for lesson in lessons:
                 id = lesson.get('id')
                 score = lesson.get('score')
                 new_lesson = Lesson.objects.get(pk=id)
                 UserLesson(user=instance, lesson=new_lesson,
                            score=score).save()
+                #! Это что вообще за треш я написал
+                course = new_lesson.course
+                if (course not in instance.courses.all()):
+                    print('1')
+                    course_lessons = new_lesson.course.lessons.all()
+                    user_lessons = instance.lessons.all()
+                    intersection_lessons = set(
+                        user_lessons).intersection(set(course_lessons))
+                    if set(course_lessons) == intersection_lessons:
+                        instance.courses.add(course)
 
         instance.__dict__.update(**validated_data)
         instance.save()
