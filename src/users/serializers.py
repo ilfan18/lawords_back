@@ -18,7 +18,8 @@ class UserLessonSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    lessons = UserLessonSerializer(source='userlesson_set', many=True)
+    lessons = UserLessonSerializer(
+        source='userlesson_set', many=True, required=False)
 
     @transaction.atomic
     def create(self, validated_data):
@@ -66,11 +67,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         exclude = (
-            'password',
             'is_superuser',
-            'is_staff',
-            'date_joined',
-            'last_login',
             'groups',
             'user_permissions',
         )
