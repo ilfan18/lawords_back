@@ -6,6 +6,7 @@ from .serializers import (
     UserSerializer,
     SetUsernameSerializer,
     SetPasswordSerializer,
+    UserCreateSerializer
 )
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
@@ -20,19 +21,20 @@ from rest_framework import views, viewsets, status
 class UserViewSet(viewsets.ModelViewSet):
     """User view set"""
 
+    #! Перенести все сюда (как в Djoser)
+
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = self.perform_create(serializer)
-        send_activation_email(request, user)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def get_serializer_class(self):
+        if self.action == "create":
+            return UserCreateSerializer
+        return self.serializer_class
 
     def perform_create(self, serializer):
-        return serializer.save()
+        user = serializer.save()
+        # ! Переделать в класс от стандартного класса
+        send_activation_email(self.request, user)
 
 
 @api_view(('POST',))
@@ -51,11 +53,9 @@ def user_activate(request):
 def resend_activation(request):
     """Resend activation email. Takes uid."""
     try:
-        print(request.data.get('uid'))
         user = get_user_model(). _default_manager.get(pk=request.data.get('uid'))
     except(User.DoesNotExist):
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    print(user)
     user.is_active = False
     user.save()
     send_activation_email(request, user)

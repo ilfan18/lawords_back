@@ -6,7 +6,8 @@ from django.core import exceptions as django_exceptions
 from .models import UserLesson
 from courses.models import Lesson, Course
 # ! Про это узнать
-from django.db import transaction
+from django.db import transaction, IntegrityError
+#! Заменить get_user_model() на переменную
 
 
 class UserLessonSerializer(serializers.ModelSerializer):
@@ -20,20 +21,6 @@ class UserLessonSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     lessons = UserLessonSerializer(
         source='userlesson_set', many=True, required=False)
-
-    @transaction.atomic
-    def create(self, validated_data):
-        user = get_user_model().objects.create(**validated_data)
-        if 'lessons' in self.initial_data:
-            lessons = self.initial_data.get('lessons')
-            for lesson in lessons:
-                id = lesson.get('id')
-                score = lesson.get('score')
-                new_lesson = Lesson.objects.get(pk=id)
-                UserLesson(user=instance, lesson=new_lesson,
-                           score=score).save()
-        user.save()
-        return user
 
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -52,7 +39,6 @@ class UserSerializer(serializers.ModelSerializer):
                 #! Это что вообще за треш я написал
                 course = new_lesson.course
                 if (course not in instance.courses.all()):
-                    print('1')
                     course_lessons = new_lesson.course.lessons.all()
                     user_lessons = instance.lessons.all()
                     intersection_lessons = set(
@@ -69,8 +55,54 @@ class UserSerializer(serializers.ModelSerializer):
         exclude = (
             'is_superuser',
             'groups',
+            'password',
             'user_permissions',
+            'last_login'
         )
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        style={"input_type": "password"}, write_only=True)
+
+    default_error_messages = {
+        "cannot_create_user": _('Cannot create user.')
+    }
+
+    class Meta:
+        model = get_user_model()
+        fields = (
+            'username',
+            'email',
+            'password'
+        )
+
+    def validate(self, attrs):
+        user = get_user_model()(**attrs)
+        password = attrs.get("password")
+        try:
+            validate_password(password, user)
+        except django_exceptions.ValidationError as e:
+            serializer_error = serializers.as_serializer_error(e)
+            raise serializers.ValidationError(
+                {"password": serializer_error[api_settings.NON_FIELD_ERRORS_KEY]}
+            )
+        return attrs
+
+    def create(self, validated_data):
+        try:
+            user = self.perform_create(validated_data)
+        except IntegrityError:
+            self.fail("cannot_create_user")
+
+        return user
+
+    def perform_create(self, validated_data):
+        with transaction.atomic():
+            user = get_user_model().objects.create_user(**validated_data)
+            user.is_active = False
+            user.save(update_fields=["is_active"])
+        return user
 
 
 class UsernameSerializer(serializers.ModelSerializer):
