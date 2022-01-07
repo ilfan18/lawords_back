@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'courses',
     'users',
     'users_auth',
-    'main_info'
 ]
 
 MIDDLEWARE = [
@@ -214,7 +213,7 @@ JAZZMIN_SETTINGS = {
         'auth': 'fas fa-users-cog',
         'auth.Group': 'fas fa-users-cog',
     },
-    "order_with_respect_to": ['main_info', 'courses', 'users', 'auth'],
+    "order_with_respect_to": ['courses', 'users', 'auth'],
 }
 
 # CKEDITOR
