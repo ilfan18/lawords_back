@@ -214,7 +214,7 @@ JAZZMIN_SETTINGS = {
         'auth': 'fas fa-users-cog',
         'auth.Group': 'fas fa-users-cog',
     },
-    "order_with_respect_to": ['courses', 'users', 'auth'],
+    "order_with_respect_to": ['main_info', 'courses', 'users', 'auth'],
 }
 
 # CKEDITOR
