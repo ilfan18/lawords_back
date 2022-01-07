@@ -14,7 +14,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email')
+        fields = ('username', 'email', 'is_active')
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -36,7 +36,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'is_active')
+        fields = ('username', 'email', 'password', 'is_active', 'courses')
 
     def clean_password(self):
         return self.initial["password"]
@@ -45,21 +45,25 @@ class UserChangeForm(forms.ModelForm):
 class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
-    list_display = ('username', 'email', 'is_staff')
+    list_display = ('username', 'email', 'is_staff', 'date_joined')
     list_filter = ('is_staff',)
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
+        (None, {'fields': ('username', 'email', 'password', 'is_active', 'courses')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2')}
+            'fields': ('username', 'email', 'password1', 'password2', 'is_active')}
          ),
     )
     search_fields = ('email', 'username')
-    ordering = ('-id',)
+    ordering = ('-date_joined',)
     filter_horizontal = ()
 
 
+class UserLessonAdmin(admin.ModelAdmin):
+    list_display = ('user', 'lesson', 'score')
+
+
 admin.site.register(User, UserAdmin)
-admin.site.register(UserLesson,)
+admin.site.register(UserLesson, UserLessonAdmin)

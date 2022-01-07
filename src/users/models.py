@@ -62,8 +62,16 @@ class User(AbstractUser):
 
 
 class UserLesson(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    lesson = models.ForeignKey('courses.Lesson', on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        verbose_name='Пользователь',
+        to=User,
+        on_delete=models.CASCADE,
+    )
+    lesson = models.ForeignKey(
+        verbose_name='Урок',
+        to='courses.Lesson',
+        on_delete=models.CASCADE
+    )
     score = models.PositiveIntegerField(
         'Балл',
         default=0,
