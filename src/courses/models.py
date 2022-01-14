@@ -123,9 +123,8 @@ class Exercise(models.Model):
         blank=True,
         help_text='Оставьте пустым, если тип не "Перевод с картинки"'
     )
-    text = models.TextField(
+    text = RichTextField(
         'Текст вопроса',
-        max_length=500,
         help_text='Используйте "__" для пропуска'
     )
 
